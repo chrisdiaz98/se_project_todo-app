@@ -1,17 +1,49 @@
-# Simple Todo App
+# 📝 Simple Todo App
 
-Give a brief description of the project here. Feel free to give it a different name.
+A lightweight, browser-based **Todo application** built with JavaScript and organized using **object-oriented programming (OOP)** principles. This project demonstrates modular file structure, reusable components, and form validation.
 
-## Functionality
+## ✨ Functionality
 
-Give a more detailed explanation of the project and its functionality.
+- Add new todos with a **title** and optional **due date**.
+- Mark todos as **completed** using a checkbox.
+- Delete todos from the list.
+- Form validation:
 
-## Technology
+  - Invalid inputs display error messages.
+  - Submit button is disabled until inputs are valid.
 
-Give a description of the technologies and techniques used. Pictures, GIFs, or screenshots that detail the project features are recommended.
+- Preloaded with a list of **initial todos**.
+- Uses two main classes:
 
-## Deployment
+  - `Todo` → generates and manages todo items.
+  - `FormValidator` → handles real-time form validation and resetting.
+
+## 🛠️ Technology
+
+- **JavaScript (ES6+)** for logic and OOP components.
+- **HTML5 `<template>`** for generating todo items.
+- **CSS3** for styling the UI.
+- **UUID (via CDN)** for generating unique IDs for new todos.
+- **Modular project structure**:
+
+  ```
+  se_project_todo-app/
+  ├── components/
+  │   ├── Todo.js
+  │   └── FormValidator.js
+  ├── pages/
+  │   ├── index.js
+  │   └── index.css
+  ├── utils/
+  │   └── constants.js
+  ├── index.html
+  └── README.md
+  ```
+
+📸 ![App Screenshot](./images/simple-todo-app.png)
+
+## 🚀 Deployment
 
 This project is deployed on GitHub Pages:
 
-- ADD LINK HERE
+👉 [**Live Demo**](ADD LINK HERE)
