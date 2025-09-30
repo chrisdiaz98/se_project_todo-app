@@ -46,4 +46,4 @@ A lightweight, browser-based **Todo application** built with JavaScript and orga
 
 This project is deployed on GitHub Pages:
 
-👉 [**Live Demo**](ADD LINK HERE)
+👉 [**Live Demo**](https://chrisdiaz98.github.io/se_project_todo-app/)
