@@ -5,14 +5,13 @@ class Todo {
   }
 
   _setEventListeners() {
-    const todoDeleteBtn = this._todoElement.querySelector(".todo__delete-btn");
-    todoDeleteBtn.addEventListener("click", () => {
+    this._todoDeleteBtn = this._todoElement.querySelector(".todo__delete-btn");
+    this._todoDeleteBtn.addEventListener("click", () => {
       this._todoElement.remove();
     });
 
     this._todoCheckboxEl.addEventListener("change", () => {
       this._data.completed = !this._data.completed;
-      console.log(this._data.completed);
     });
   }
 

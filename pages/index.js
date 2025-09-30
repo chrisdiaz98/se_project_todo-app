@@ -12,6 +12,7 @@ const todosList = document.querySelector(".todos__list");
 const addTodoFormValidator = new FormValidator(validationConfig, addTodoForm);
 addTodoFormValidator.enableValidation();
 
+// --- Modal helpers ---
 const openModal = (modal) => {
   modal.classList.add("popup_visible");
 };
@@ -20,11 +21,18 @@ const closeModal = (modal) => {
   modal.classList.remove("popup_visible");
 };
 
+// --- Todo helpers ---
 const generateTodo = (data) => {
   const todo = new Todo(data, "#todo-template");
   return todo.getView();
 };
 
+const renderTodo = (data) => {
+  const todoElement = generateTodo(data);
+  todosList.append(todoElement);
+};
+
+// --- Event Listeners ---
 addTodoButton.addEventListener("click", () => {
   openModal(addTodoPopup);
 });
@@ -35,6 +43,7 @@ addTodoCloseBtn.addEventListener("click", () => {
 
 addTodoForm.addEventListener("submit", (evt) => {
   evt.preventDefault();
+
   const name = evt.target.name.value;
   const dateInput = evt.target.date.value;
 
@@ -43,15 +52,13 @@ addTodoForm.addEventListener("submit", (evt) => {
 
   const id = uuidv4();
   const values = { name, date, id, completed: false };
-  const todo = generateTodo(values);
 
-  todosList.append(todo);
+  renderTodo(values);
   closeModal(addTodoPopup);
-
   addTodoFormValidator.resetValidation();
 });
 
+// --- Initial Todos ---
 initialTodos.forEach((item) => {
-  const todo = generateTodo(item);
-  todosList.append(todo);
+  renderTodo(item);
 });
