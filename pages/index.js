@@ -3,68 +3,63 @@ import { initialTodos, validationConfig } from "../utils/constants.js";
 import Todo from "../components/Todo.js";
 import FormValidator from "../components/FormValidator.js";
 import { Section } from "../utils/Section.js";
+import PopupWithForm from "../components/PopupWithForm.js";
+import TodoCounter from "../components/TodoCounter.js";
 
 const addTodoButton = document.querySelector(".button_action_add");
-const addTodoPopup = document.querySelector("#add-todo-popup");
-const addTodoForm = addTodoPopup.querySelector(".popup__form");
-const addTodoCloseBtn = addTodoPopup.querySelector(".popup__close");
+const addTodoForm = document.querySelector("#add-todo-form");
 
 const addTodoFormValidator = new FormValidator(validationConfig, addTodoForm);
 addTodoFormValidator.enableValidation();
 
-// --- Modal helpers ---
-const openModal = (modal) => {
-  modal.classList.add("popup_visible");
-};
+const todoCounter = new TodoCounter(initialTodos, ".counter__text");
 
-const closeModal = (modal) => {
-  modal.classList.remove("popup_visible");
-};
+const generateTodo = (todoData) => {
+  const handleToggleCompleted = (isCompleted) => {
+    todoCounter.updateCompleted(isCompleted ? 1 : -1);
+  };
 
-// --- Todo helpers ---
-const generateTodo = (data) => {
-  const todo = new Todo(data, "#todo-template");
+  const handleDelete = () => {
+    todoCounter.updateTotal(false);
+    if (todoData.completed) todoCounter.updateCompleted(false);
+  };
+
+  const todo = new Todo(
+    todoData,
+    "#todo-template",
+    handleToggleCompleted,
+    handleDelete
+  );
   return todo.getView();
 };
 
-// --- Section setup ---
-const defaultCardList = new Section({
+const todosSection = new Section({
   items: initialTodos,
   renderer: (todoData) => {
     const todoElement = generateTodo(todoData);
-    defaultCardList.addItem(todoElement);
+    todosSection.addItem(todoElement);
   },
   containerSelector: ".todos__list",
 });
+todosSection.renderItems();
 
-// Render initial todos
-defaultCardList.renderItems();
+const addTodoPopup = new PopupWithForm("#add-todo-popup", (inputValues) => {
+  const date = inputValues.date ? new Date(inputValues.date) : null;
+  if (date) date.setMinutes(date.getMinutes() + date.getTimezoneOffset());
 
-// --- Event Listeners ---
-addTodoButton.addEventListener("click", () => {
-  openModal(addTodoPopup);
-});
+  const newTodo = {
+    id: uuidv4(),
+    name: inputValues.name,
+    date: date,
+    completed: false,
+  };
 
-addTodoCloseBtn.addEventListener("click", () => {
-  closeModal(addTodoPopup);
-});
-
-addTodoForm.addEventListener("submit", (evt) => {
-  evt.preventDefault();
-
-  const name = evt.target.name.value;
-  const dateInput = evt.target.date.value;
-
-  const date = new Date(dateInput);
-  date.setMinutes(date.getMinutes() + date.getTimezoneOffset());
-
-  const id = uuidv4();
-  const values = { name, date, id, completed: false };
-
-  // Add new todo to the list
-  const todoElement = generateTodo(values);
-  defaultCardList.addItem(todoElement);
-
-  closeModal(addTodoPopup);
+  const todoElement = generateTodo(newTodo);
+  todosSection.addItem(todoElement);
+  todoCounter.updateTotal(true);
   addTodoFormValidator.resetValidation();
 });
+
+addTodoPopup.setEventListeners();
+
+addTodoButton.addEventListener("click", () => addTodoPopup.open());
