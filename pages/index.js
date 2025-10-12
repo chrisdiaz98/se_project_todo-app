@@ -2,12 +2,12 @@ import { v4 as uuidv4 } from "https://jspm.dev/uuid";
 import { initialTodos, validationConfig } from "../utils/constants.js";
 import Todo from "../components/Todo.js";
 import FormValidator from "../components/FormValidator.js";
+import { Section } from "../utils/Section.js";
 
 const addTodoButton = document.querySelector(".button_action_add");
 const addTodoPopup = document.querySelector("#add-todo-popup");
 const addTodoForm = addTodoPopup.querySelector(".popup__form");
 const addTodoCloseBtn = addTodoPopup.querySelector(".popup__close");
-const todosList = document.querySelector(".todos__list");
 
 const addTodoFormValidator = new FormValidator(validationConfig, addTodoForm);
 addTodoFormValidator.enableValidation();
@@ -27,10 +27,18 @@ const generateTodo = (data) => {
   return todo.getView();
 };
 
-const renderTodo = (data) => {
-  const todoElement = generateTodo(data);
-  todosList.append(todoElement);
-};
+// --- Section setup ---
+const defaultCardList = new Section({
+  items: initialTodos,
+  renderer: (todoData) => {
+    const todoElement = generateTodo(todoData);
+    defaultCardList.addItem(todoElement);
+  },
+  containerSelector: ".todos__list",
+});
+
+// Render initial todos
+defaultCardList.renderItems();
 
 // --- Event Listeners ---
 addTodoButton.addEventListener("click", () => {
@@ -53,12 +61,10 @@ addTodoForm.addEventListener("submit", (evt) => {
   const id = uuidv4();
   const values = { name, date, id, completed: false };
 
-  renderTodo(values);
+  // Add new todo to the list
+  const todoElement = generateTodo(values);
+  defaultCardList.addItem(todoElement);
+
   closeModal(addTodoPopup);
   addTodoFormValidator.resetValidation();
-});
-
-// --- Initial Todos ---
-initialTodos.forEach((item) => {
-  renderTodo(item);
 });
