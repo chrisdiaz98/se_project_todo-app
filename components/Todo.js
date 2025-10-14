@@ -1,4 +1,4 @@
-class Todo {
+export default class Todo {
   constructor(data, templateSelector, handleToggleCompleted, handleDelete) {
     this._data = data;
     this._templateElement = document.querySelector(templateSelector);
@@ -8,9 +8,10 @@ class Todo {
 
   _setEventListeners() {
     this._todoCheckboxEl.addEventListener("change", () => {
-      this._data.completed = this._todoCheckboxEl.checked;
+      const isChecked = this._todoCheckboxEl.checked;
+      this._data.completed = isChecked;
       if (this._handleToggleCompleted) {
-        this._handleToggleCompleted(this._data.completed);
+        this._handleToggleCompleted(isChecked);
       }
     });
 
@@ -60,5 +61,3 @@ class Todo {
     return this._todoElement;
   }
 }
-
-export default Todo;

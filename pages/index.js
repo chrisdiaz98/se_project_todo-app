@@ -6,22 +6,32 @@ import { Section } from "../utils/Section.js";
 import PopupWithForm from "../components/PopupWithForm.js";
 import TodoCounter from "../components/TodoCounter.js";
 
+// ---------- ELEMENTS ----------
 const addTodoButton = document.querySelector(".button_action_add");
-const addTodoForm = document.querySelector("#add-todo-form");
+const addTodoForm = document.forms["add-todo-form"];
 
+// ---------- VALIDATION ----------
 const addTodoFormValidator = new FormValidator(validationConfig, addTodoForm);
 addTodoFormValidator.enableValidation();
 
+// ---------- COUNTER ----------
 const todoCounter = new TodoCounter(initialTodos, ".counter__text");
 
+// ---------- SECTION ----------
+let todosSection;
+
+// ---------- GENERATE TODO ----------
 const generateTodo = (todoData) => {
   const handleToggleCompleted = (isCompleted) => {
-    todoCounter.updateCompleted(isCompleted ? 1 : -1);
+    todoData.completed = isCompleted;
+    todoCounter.updateCompleted(isCompleted);
   };
 
   const handleDelete = () => {
     todoCounter.updateTotal(false);
-    if (todoData.completed) todoCounter.updateCompleted(false);
+    if (todoData.completed) {
+      todoCounter.updateCompleted(false);
+    }
   };
 
   const todo = new Todo(
@@ -30,19 +40,25 @@ const generateTodo = (todoData) => {
     handleToggleCompleted,
     handleDelete
   );
+
   return todo.getView();
 };
 
-const todosSection = new Section({
+// ---------- RENDER TODO ----------
+const renderTodo = (todoData) => {
+  const todoElement = generateTodo(todoData);
+  todosSection.addItem(todoElement);
+};
+
+// ---------- INITIALIZE SECTION ----------
+todosSection = new Section({
   items: initialTodos,
-  renderer: (todoData) => {
-    const todoElement = generateTodo(todoData);
-    todosSection.addItem(todoElement);
-  },
+  renderer: renderTodo,
   containerSelector: ".todos__list",
 });
 todosSection.renderItems();
 
+// ---------- POPUP ----------
 const addTodoPopup = new PopupWithForm("#add-todo-popup", (inputValues) => {
   const date = inputValues.date ? new Date(inputValues.date) : null;
   if (date) date.setMinutes(date.getMinutes() + date.getTimezoneOffset());
@@ -54,12 +70,10 @@ const addTodoPopup = new PopupWithForm("#add-todo-popup", (inputValues) => {
     completed: false,
   };
 
-  const todoElement = generateTodo(newTodo);
-  todosSection.addItem(todoElement);
+  renderTodo(newTodo);
   todoCounter.updateTotal(true);
   addTodoFormValidator.resetValidation();
 });
 
 addTodoPopup.setEventListeners();
-
 addTodoButton.addEventListener("click", () => addTodoPopup.open());

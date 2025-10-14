@@ -6,13 +6,15 @@ export default class TodoCounter {
     this._updateText();
   }
 
-  updateCompleted(increment) {
-    this._completed += increment ? 1 : -1;
+  updateCompleted(isCompleted) {
+    this._completed += isCompleted ? 1 : -1;
+    if (this._completed < 0) this._completed = 0;
     this._updateText();
   }
 
   updateTotal(increment) {
     this._total += increment ? 1 : -1;
+    if (this._total < 0) this._total = 0;
     this._updateText();
   }
 
